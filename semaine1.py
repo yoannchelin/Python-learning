@@ -30,7 +30,7 @@ def compteurs_de_mot(phrase):
             compteurs[mot] = 1
     return compteurs
 
-def chunk(texte, taille, overlap):
+def chunk(texte: str, taille: int, overlap: int) -> list:
     mots = texte.split()
     pas = taille - overlap
     resultat = []
@@ -41,4 +41,35 @@ def chunk(texte, taille, overlap):
         resultat.append(" ".join(morceau))
     return resultat
 
-print(chunk("a b c d e f g", 4, 1))
+class Documents:
+    def __init__(self, titre: str, contenu: str):
+        self.titre = titre
+        self.contenu = contenu
+    def contient(self, motcle: str) -> bool:
+        return motcle.lower() in self.contenu.lower()
+    
+documents = [
+    Documents("Guide Python", "Python est un langage simple"),
+    Documents("Recette", "Ajouter du sel et du poivre"),
+    Documents("Intro IA", "Python est utilisé en intelligence artificielle"),
+]
+
+def filtrer_titres(documents, motcle):
+    res = []
+    for doc in documents:
+        if doc.contient(motcle):   
+            res.append(doc.titre)        
+    return sorted(res)
+
+print(filtrer_titres(documents, "python"))
+
+def diviser_securise(a: int, b: int) -> float:
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return None
+    
+print(diviser_securise(10, 2))   # doit afficher 5.0
+print(diviser_securise(10, 0))   # doit afficher None
+
+
