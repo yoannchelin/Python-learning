@@ -1,15 +1,23 @@
 import json
 
-documents = [
-    {"titre": "Guide Python", "contenu": "Python est un langage simple"},
-    {"titre": "Recette", "contenu": "Ajouter du sel"},
-    {"titre": "Intro Ia", "contenu": "Ia est en marche"},
-]
 
-with open("docs.json", "w", encoding="utf-8") as f:
-    json.dump(documents, f, ensure_ascii=False, indent=2)
+def open_doc(doc: str) -> list:
+        with open(doc, "r", encoding="utf-8") as f:
+            charges = json.load(f)
+        return charges
 
-with open("docs.json", "r", encoding="utf-8") as f:
-    charges = json.load(f)
 
-print(charges[0]["titre"])
+def filtrer_titres(documents, motcle):
+    res = []
+    for doc in documents:
+        if motcle.lower() in doc["contenu"].lower():
+            res.append(doc["titre"])        
+    return sorted(res)
+
+try:
+    print(filtrer_titres(open_doc("docs.json"), "Python"))
+    print(open_doc("inexistant.json"))
+    print(filtrer_titres(open_doc("inexistant.json"), "python"))
+
+except FileNotFoundError:
+    print('fichier introuvables')
