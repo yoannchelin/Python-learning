@@ -10,5 +10,13 @@
   {
     "titre": "Guide Python IA",
     "contenu": "Python est un langage simple, l'ia aide beaucoup a apprendre"
+  },
+  {
+    "titre": "Le RAG expliqué",
+    "contenu": "Le RAG, pour Retrieval-Augmented Generation, est une technique qui permet à un modèle de langage de répondre en s'appuyant sur des documents externes. Les documents sont d'abord découpés en morceaux appelés chunks. Chaque chunk est ensuite transformé en vecteur grâce à un modèle d'embedding, puis stocké dans une base vectorielle. Quand l'utilisateur pose une question, celle-ci est aussi transformée en vecteur, et on récupère les chunks les plus proches. Ces extraits sont enfin ajoutés au prompt pour que le modèle réponde à partir de sources fiables plutôt que de sa seule mémoire."
+  },
+  {
+    "titre": "Pourquoi tester ses prompts",
+    "contenu": "Un prompt vague donne des réponses imprévisibles. Pour obtenir un résultat fiable, il faut préciser le format attendu, la langue, la longueur et ce que le modèle ne doit pas faire. Il est aussi utile de séparer clairement la consigne du texte à traiter. Enfin, on teste toujours le même prompt sur plusieurs textes différents, car un prompt qui marche sur un exemple peut échouer sur un autre."
   }
 ]
