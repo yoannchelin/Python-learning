@@ -1,5 +1,9 @@
+from pathlib import Path
+
 import anthropic
 import doc
+
+DOSSIER = Path(__file__).parent   # le dossier rag/, d'où que le script soit lancé
 
 def resumer(texte: str) -> str:
     client = anthropic.Anthropic()
@@ -12,7 +16,7 @@ def resumer(texte: str) -> str:
     return reponse.content[0].text
 
 
-documents = doc.open_doc("docs.json")     # une liste de dictionnaires
+documents = doc.open_doc(DOSSIER / "docs.json")     # une liste de dictionnaires
 premier = documents[4]                # un dictionnaire
 texte = premier["contenu"]            # une chaîne (crochets : c'est un dict)
 print(resumer(texte))
