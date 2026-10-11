@@ -24,9 +24,7 @@ def similarite_cosinus(a: list, b: list) -> float:
         return(0.0)
 
     return res
-
-print(similarite_cosinus([1, 0], [1, 0]))    # 1.0
-print(similarite_cosinus([1, 0], [0, 1]))    # 0.0
-print(similarite_cosinus([1, 2], [2, 4]))    # 1.0 (même direction, longueur différente)
-print(similarite_cosinus([0, 0], [1, 0]))    # 0.0 (ne doit pas planter)
-print(round(similarite_cosinus([1, 2], [2, 4]), 6))   # 1.0
+print(round(similarite_cosinus([1, 0], [1, 0]), 6))    # 1.0
+print(round(similarite_cosinus([1, 0], [0, 1]), 6))    # 0.0
+print(round(similarite_cosinus([1, 2], [2, 4]), 6))    # 1.0
+print(round(similarite_cosinus([0, 0], [1, 0]), 6))    # 0.0 (ne doit pas planter)
