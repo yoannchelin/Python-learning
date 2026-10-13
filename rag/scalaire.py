@@ -24,7 +24,14 @@ def similarite_cosinus(a: list, b: list) -> float:
         return(0.0)
 
     return res
-print(round(similarite_cosinus([1, 0], [1, 0]), 6))    # 1.0
-print(round(similarite_cosinus([1, 0], [0, 1]), 6))    # 0.0
-print(round(similarite_cosinus([1, 2], [2, 4]), 6))    # 1.0
-print(round(similarite_cosinus([0, 0], [1, 0]), 6))    # 0.0 (ne doit pas planter)
+
+def produit_scalaire_dico(dico1: dict, dico2: dict) -> float:
+    total = 0
+    for cle in dico1:
+        if cle in dico2:
+            total += dico1[cle] * dico2[cle]
+    return total
+
+print(produit_scalaire_dico({"le": 2, "chat": 1}, {"le": 1, "chien": 1}) )  # 2
+print(produit_scalaire_dico({"chat": 1}, {"chien": 1}) )                     # 0
+print(produit_scalaire_dico({}, {"chat": 1}))                                # 0
