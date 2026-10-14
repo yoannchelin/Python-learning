@@ -132,6 +132,31 @@ mots = phrase.lower().split()
 
 Je lis de gauche à droite et je me demande à chaque étape : "qu'est-ce que j'ai dans les mains ?" (une chaîne, puis une liste).
 
+### 1.12 Carré et racine carrée
+
+```python
+3 ** 2        # 9    : au carré
+25 ** 0.5     # 5.0  : racine carrée (puissance 1/2)
+```
+
+- Le résultat d'une racine est un **float** : `-> float`, pas `-> int`.
+- La racine se calcule **une fois, après la boucle** (sur la somme complète), jamais dedans :
+
+```python
+# Faux : la racine est recalculée à chaque tour (le résultat final est juste, le code est confus)
+for cle in dico:
+    carre += dico[cle] ** 2
+    total = carre ** 0.5
+
+# Juste : une seule variable, la racine à la fin
+somme_carres = 0
+for cle in dico:
+    somme_carres += dico[cle] ** 2
+return somme_carres ** 0.5
+```
+
+Version une ligne : `return sum(valeur ** 2 for valeur in dico.values()) ** 0.5`
+
 ---
 
 ## 2. Boucles
@@ -396,8 +421,38 @@ compteur[mot] = compteur.get(mot, 0) + 1
 ```
 
 - `.get()` **lit**, il ne modifie jamais le dictionnaire : je stocke le résultat dans `compteur[mot]`.
+- L'ordre des arguments : d'abord la **clé** qu'on cherche, ensuite la **valeur de repli** : `.get(cle, defaut)`.
 - La valeur par défaut est celle d'**avant** le premier passage (0 pour un compteur, pas 1).
 - Pour le groupement (valeur = liste), je garde le `if/else` : `.get(lettre, []).append(mot)` perd la liste, qui n'est jamais stockée.
+
+### 4.8 `=` écrase, `+=` accumule
+
+```python
+# Faux : chaque clé commune REMPLACE le total, il ne garde que la dernière
+total = 0
+for cle in dico1:
+    if cle in dico2:
+        total = dico1[cle] * dico2[cle]
+
+# Juste : on AJOUTE au total à chaque clé commune
+        total += dico1[cle] * dico2[cle]
+```
+
+Le bug est invisible avec **une seule** clé commune. Test qui le révèle : `{"a": 2, "b": 3}` et `{"a": 1, "b": 4}` → attendu `14` (2 + 12), le code faux renvoie `12`.
+
+### 4.9 Brique validée, brique retapée : je la retesterai
+
+```python
+# Faux : le défaut est 1, donc chaque mot est compté un de trop
+compteur[mot] = compteur.get(mot, 1) + 1
+
+# Juste : 0 avant le premier passage
+compteur[mot] = compteur.get(mot, 0) + 1
+```
+
+Piège vécu : `compteur_mot` était juste le matin, puis retapée de mémoire le soir avec `1`. Les tests où **chaque mot apparaît une fois** passaient quand même (tous les comptes sont gonflés pareil, l'erreur s'annule dans la division du cosinus). Seuls les tests avec un **mot répété** donnaient un mauvais résultat (`0.98058` au lieu de `0.948683`).
+
+Règle : avant d'assembler des briques, je teste chaque brique seule avec un cas où un élément se répète : `compteur_mot("le chat le")` doit donner `{"le": 2, "chat": 1}`.
 
 ---
 
@@ -551,10 +606,10 @@ Le prompt doit préciser le format exact, ce qu'il ne faut **pas** faire, limite
 - [ ] J'ai relu l'énoncé ligne par ligne et coché chaque exigence (tri, casse, cas vide, ce que la fonction renvoie)
 - [ ] J'ai testé avec l'exemple de l'énoncé
 - [ ] J'ai testé le cas limite (liste vide, un seul élément, fichier absent)
+- [ ] J'ai testé chaque brique réutilisée seule, avec un élément répété et deux clés communes (pas seulement un cas simple)
+- [ ] Si l'énoncé demande un arrondi (`round(x, 6)`), il est appliqué au `return`
 - [ ] Pas de `print` de debug oublié dans la fonction
 - [ ] `return` désindenté après la boucle
 - [ ] Les noms de variables disent ce qu'elles contiennent (et aucun ne masque un paramètre)
 - [ ] Le résultat de chaque méthode (`.lower()`, `.split()`, `sorted()`, `.get()`) est stocké ou utilisé
-
-
-[Yoann Chelin] · [https://linkedin.com/in/yoann-chelin] · [yoannchelin9@gmail.com]
+- [ ] Une seule version du code dans le fichier (pas de doublon collé)

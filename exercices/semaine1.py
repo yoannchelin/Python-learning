@@ -137,3 +137,28 @@ def grouper_par_lettres(liste: list) -> dict:
 
 
 print(grouper_par_lettres(["chat", "chien", "banane", "cheval", "avion"]))
+
+def compteur_mot(phrase: str) -> dict:
+    phrase = phrase.lower().split()
+    compteur = {}
+    for mot in phrase:
+        compteur[mot] = compteur.get(mot, 1) + 1
+    return compteur
+
+print(compteur_mot("Le chat le chien"))
+# {'le': 2, 'chat': 1, 'chien': 1}
+
+print(compteur_mot(""))
+
+def positions_mot(mots, cible) -> list:
+    res = []
+    for position, mot in enumerate(mots):
+        if cible in mot:
+            res.append(position)
+    return res
+
+print(positions_mot(["le", "chat", "le", "chien"], "le"))
+# [0, 2]
+
+print(positions_mot(["le", "chat"], "chien"))
+# []

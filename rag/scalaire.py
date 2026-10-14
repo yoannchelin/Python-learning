@@ -32,6 +32,36 @@ def produit_scalaire_dico(dico1: dict, dico2: dict) -> float:
             total += dico1[cle] * dico2[cle]
     return total
 
-print(produit_scalaire_dico({"le": 2, "chat": 1}, {"le": 1, "chien": 1}) )  # 2
-print(produit_scalaire_dico({"chat": 1}, {"chien": 1}) )                     # 0
-print(produit_scalaire_dico({}, {"chat": 1}))                                # 0
+def norme_dico(dico: dict) -> float:
+    somme_carres = 0
+    for cle in dico:
+        somme_carres += dico[cle] ** 2
+    return somme_carres ** 0.5
+
+def compteur_mot(phrase: str) -> dict:
+    phrase = phrase.lower().split()
+    compteur = {}
+    for mot in phrase:
+        compteur[mot] = compteur.get(mot, 0) + 1
+    return compteur
+
+def similarite_texte(texte1: str, texte2: str) -> float:
+    texte1_compter = compteur_mot(texte1)
+    texte2_compter = compteur_mot(texte2)
+    scalaire_text = produit_scalaire_dico(texte1_compter, texte2_compter)
+    norme_1 = norme_dico(texte1_compter)
+    norme_2 = norme_dico(texte2_compter)
+    try:
+        res = scalaire_text / (norme_1 * norme_2)
+    except ZeroDivisionError:
+        return 0.0
+    return round(res, 6)
+
+print(similarite_texte("le chat dort", "le chat mange"))              # 0.666667
+print(similarite_texte("le chat", "le chat"))                         # 1.0
+print(similarite_texte("le chat", "un chien"))                        # 0.0
+print(similarite_texte("", "le chat"))                                # 0.0
+print(similarite_texte("", ""))                                       # 0.0
+print(similarite_texte("Le Chat", "le chat"))                         # 1.0
+print(similarite_texte("le chat le", "le chat"))                      # 0.948683
+print(similarite_texte("le chat dort sur le canape", "le chien dort sur le tapis"))   # 0.75
