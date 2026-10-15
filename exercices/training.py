@@ -8,12 +8,7 @@ def grouper_par_lettres(mots: list) -> dict:
             groupe[lettres] = [mot]
     return groupe
 
-def compteur_mot(phrase: str) -> dict:
-    phrase = phrase.lower().split()
-    compteur = {}
-    for mot in phrase:
-       compteur[mot] = compteur.get(mot, 0) + 1
-    return compteur
+
 
 def positions_mot(mots: list, cible: str) -> list:
     res = []
@@ -22,8 +17,24 @@ def positions_mot(mots: list, cible: str) -> list:
             res.append(position)
     return res
 
-print(positions_mot(["le", "chat", "le", "chien"], "le"))
-# [0, 2]
+def compteur_mot(texte: str) -> dict:
+    compteur = {}
+    texte = texte.lower().split()
+    for mot in texte:
+        compteur[mot] = compteur.get(mot, 0) + 1
+    return compteur
 
-print(positions_mot(["le", "chat"], "chien"))
-# []
+def produit_scalaire_dico(dico1: dict, dico2: dict) -> int:
+    total = 0
+    for cle in dico1:
+        if cle in dico2:
+            total += dico1[cle] * dico2[cle]
+    return total
+
+def norme_dico(dico: dict) -> float:
+    calcul = 0
+    for cle in dico:
+        calcul += dico[cle] ** 2
+    return calcul ** 0.5
+
+print(produit_scalaire_dico({"le": 2, "chat": 1}, {"le": 1, "chien": 1}))   # attendu 2)

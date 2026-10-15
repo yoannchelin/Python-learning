@@ -440,6 +440,23 @@ for cle in dico1:
 
 Le bug est invisible avec **une seule** clé commune. Test qui le révèle : `{"a": 2, "b": 3}` et `{"a": 1, "b": 4}` → attendu `14` (2 + 12), le code faux renvoie `12`.
 
+#### Variante : lire l'autre dico sans vérifier
+
+```python
+# Faux : "chat" existe dans dico1 mais pas dans dico2
+for cle in dico1:
+    total += dico1[cle] * dico2[cle]       # KeyError: 'chat'
+
+# Juste : je teste AVANT de lire
+for cle in dico1:
+    if cle in dico2:
+        total += dico1[cle] * dico2[cle]
+```
+
+Règle : quand je boucle sur un dico et que je lis un **autre** dico avec `[]`, je teste d'abord `if cle in autre_dico`. Test qui le révèle : `({"le": 2, "chat": 1}, {"le": 1, "chien": 1})` → attendu `2`.
+
+Piège de fond (vu 2 fois dans la semaine) : j'implémente la partie « multiplier » de l'énoncé et j'oublie la condition « uniquement les clés présentes dans les deux ». Je relis l'énoncé en cochant chaque mot-condition (« uniquement », « sauf », « seulement si »).
+
 ### 4.9 Brique validée, brique retapée : je la retesterai
 
 ```python
@@ -604,6 +621,7 @@ Le prompt doit préciser le format exact, ce qu'il ne faut **pas** faire, limite
 ## 9. Checklist avant de dire "c'est fini"
 
 - [ ] J'ai relu l'énoncé ligne par ligne et coché chaque exigence (tri, casse, cas vide, ce que la fonction renvoie)
+- [ ] J'ai coché chaque mot-condition de l'énoncé (« uniquement », « sauf », « seulement si »)
 - [ ] J'ai testé avec l'exemple de l'énoncé
 - [ ] J'ai testé le cas limite (liste vide, un seul élément, fichier absent)
 - [ ] J'ai testé chaque brique réutilisée seule, avec un élément répété et deux clés communes (pas seulement un cas simple)
