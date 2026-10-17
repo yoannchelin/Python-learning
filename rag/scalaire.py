@@ -57,11 +57,30 @@ def similarite_texte(texte1: str, texte2: str) -> float:
         return 0.0
     return round(res, 6)
 
-print(similarite_texte("le chat dort", "le chat mange"))              # 0.666667
-print(similarite_texte("le chat", "le chat"))                         # 1.0
-print(similarite_texte("le chat", "un chien"))                        # 0.0
-print(similarite_texte("", "le chat"))                                # 0.0
-print(similarite_texte("", ""))                                       # 0.0
-print(similarite_texte("Le Chat", "le chat"))                         # 1.0
-print(similarite_texte("le chat le", "le chat"))                      # 0.948683
-print(similarite_texte("le chat dort sur le canape", "le chien dort sur le tapis"))   # 0.75
+passages = [
+    "python est un langage de programmation",
+    "le chien mange dans le jardin",
+    "le chat dort sur le canape",
+    "le chat mange",
+]
+
+def meilleurs_passages(question: str, passages: list, k: int) -> list:
+    score = {}
+    for passage in passages:
+       score[passage] = similarite_texte(question, passage)
+    classement =  sorted(score, key=lambda meilleur_passage: score[meilleur_passage], reverse=True)
+    return classement[:k]
+
+def decouper(texte: str, taille: int, chevauchement: int) -> list:
+    res = []
+    if chevauchement >= taille:
+        raise ValueError
+    mots = texte.split()
+    pas = taille - chevauchement
+    for i in range(0, len(mots), pas):
+        morceau = mots[i:i+taille]
+        res.append(" ".join(morceau))
+    return res
+
+def preparer_morceaux(documents: list, taille: int, chevauchement: int) -> list:
+    
