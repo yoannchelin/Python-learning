@@ -265,6 +265,24 @@ def positions_mot(mots, cible):
     for position, mot in enumerate(mots):
 ```
 
+### 2.10 `join` : une liste de chaînes devient une chaîne
+
+```python
+mots = ["le", "chat", "dort"]
+" ".join(mots)        # "le chat dort" : ce qui est avant le point sépare les mots
+
+# Faux : .append renvoie None, et res[morceau] = ... utilise une liste comme numéro de case
+res[morceau] = " ".join(res.append(morceau))
+
+# Juste : deux lignes séparées, dans l'ordre
+texte_morceau = " ".join(morceau)
+res.append(texte_morceau)
+```
+
+- `join` prend une **liste de chaînes** et renvoie **une seule chaîne**.
+- Je n'imbrique jamais `.append` dans un autre appel : il renvoie `None`.
+- Une liste s'indexe avec un nombre (`res[0]`), jamais avec une autre liste.
+
 ---
 
 ## 3. Return, print et accumulation
@@ -333,6 +351,40 @@ documents_tries = sorted(documents, key=lambda doc: len(doc["contenu"]), reverse
 - `key=` prend une fonction qui dit **sur quoi comparer** : je ne cherche pas la position moi-même.
 - `reverse=True` pour l'ordre décroissant.
 - `len(un_dictionnaire)` compte les **clés**, pas le texte d'un champ : j'écris `len(doc["contenu"])`.
+
+### 3.7 `key=lambda` et `reverse=True`
+
+Un `lambda` est une mini-fonction sans nom : `lambda <ce que je reçois> : <ce que je renvoie>`. `sorted` l'appelle une fois par élément et trie selon le nombre renvoyé.
+
+```python
+mots = ["chat", "elephant", "a"]
+sorted(mots, key=lambda mot: len(mot))                 # ['a', 'chat', 'elephant']
+sorted(mots, key=lambda mot: len(mot), reverse=True)   # ['elephant', 'chat', 'a']
+```
+
+- Par défaut `sorted` va du plus petit au plus grand. `reverse=True` inverse l'ordre.
+- Sans `reverse=True`, `[:k]` garderait les `k` **plus mauvais** éléments.
+- Le nom du paramètre du lambda dit ce qu'il **reçoit** (un passage, un mot), pas ce qu'il renvoie.
+
+### 3.8 Trier un dictionnaire selon ses valeurs (passage = clé, score = valeur)
+
+```python
+# Faux : "score" est écrasé à chaque tour, il ne reste que le dernier
+for passage in passages:
+    score = similarite_texte(question, passage)
+
+# Juste : un contenant créé AVANT la boucle, une entrée par passage
+scores = {}
+for passage in passages:
+    scores[passage] = similarite_texte(question, passage)
+classement = sorted(scores, key=lambda passage: scores[passage], reverse=True)
+return classement[:k]
+```
+
+- `sorted(dico)` trie les **clés** et renvoie une **liste**.
+- Le passage est la clé car il est **unique** : deux passages différents peuvent avoir le même score, et deux scores identiques se seraient écrasés.
+- `liste[:k]` garde les `k` premiers et ne plante pas si `k` dépasse la taille.
+- Un paramètre jamais utilisé (ici `k`) est presque toujours un oubli.
 
 ---
 
@@ -556,6 +608,27 @@ Je lis toujours la **dernière ligne du traceback** : `NomException: message`.
 
 Règle : **une erreur qui plante tout de suite et clairement vaut mieux qu'une réponse fausse qui a l'air normale.**
 
+### 6.5 `raise` : avec le mot-clé, avec un message, avant la boucle
+
+```python
+# Faux 1 : "ValueError" seul est juste un nom, rien n'est levé
+if chevauchement >= taille:
+    ValueError
+
+# Faux 2 : print affiche puis renvoie None, donc le message de l'erreur est None
+raise ValueError(print("chevauchement trop grand"))
+
+# Juste : vérifier les paramètres tout en haut, avec une chaîne comme message
+def decouper(texte, taille, chevauchement):
+    if chevauchement >= taille:
+        raise ValueError("le chevauchement doit être plus petit que la taille")
+    ...
+```
+
+- Sans le mot `raise`, rien n'est levé.
+- Le message est une **chaîne** entre guillemets, jamais un `print(...)`.
+- Une vérification écrite **dans** la boucle ne s'exécute que si la boucle fait un tour : `range` avec un pas nul ou négatif n'en fait aucun. Je vérifie les paramètres avant de les utiliser.
+
 ---
 
 ## 7. Classes
@@ -622,6 +695,8 @@ Le prompt doit préciser le format exact, ce qu'il ne faut **pas** faire, limite
 
 - [ ] J'ai relu l'énoncé ligne par ligne et coché chaque exigence (tri, casse, cas vide, ce que la fonction renvoie)
 - [ ] J'ai coché chaque mot-condition de l'énoncé (« uniquement », « sauf », « seulement si »)
+- [ ] Chaque paramètre de la fonction est utilisé quelque part (sinon j'ai oublié une exigence)
+- [ ] Je vérifie les paramètres (`raise ValueError("message")`) au début de la fonction, avant la boucle
 - [ ] J'ai testé avec l'exemple de l'énoncé
 - [ ] J'ai testé le cas limite (liste vide, un seul élément, fichier absent)
 - [ ] J'ai testé chaque brique réutilisée seule, avec un élément répété et deux clés communes (pas seulement un cas simple)

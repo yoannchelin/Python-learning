@@ -75,6 +75,7 @@ def decouper(texte: str, taille: int, chevauchement: int) -> list:
     res = []
     if chevauchement >= taille:
         raise ValueError
+        
     mots = texte.split()
     pas = taille - chevauchement
     for i in range(0, len(mots), pas):
@@ -83,4 +84,33 @@ def decouper(texte: str, taille: int, chevauchement: int) -> list:
     return res
 
 def preparer_morceaux(documents: list, taille: int, chevauchement: int) -> list:
-    
+    res = []
+    if chevauchement >= taille:
+        raise ValueError("chevauchement trop grand")
+    for document in documents:
+        morceaux = decouper(document["contenu"], taille, chevauchement)
+        res += morceaux
+    return res
+        
+
+
+documents = [
+    {"titre": "Chats", "contenu": "le chat dort sur le canape toute la journee"},
+    {"titre": "Python", "contenu": "python est un langage de programmation simple"},
+]
+attendu = [
+    "le chat dort sur",
+    "sur le canape toute",
+    "toute la journee",
+    "python est un langage",
+    "langage de programmation simple",
+    "simple",
+]
+res = preparer_morceaux(documents, 4, 1)
+print(res == attendu)
+print(res)
+print(preparer_morceaux([], 4, 1) == [])
+
+morceaux = preparer_morceaux(documents, 4, 1)
+print(meilleurs_passages("chat", morceaux, 1) == ["le chat dort sur"])
+print(meilleurs_passages("langage de programmation", morceaux, 1) == ["langage de programmation simple"])
