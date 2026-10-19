@@ -283,6 +283,28 @@ res.append(texte_morceau)
 - Je n'imbrique jamais `.append` dans un autre appel : il renvoie `None`.
 - Une liste s'indexe avec un nombre (`res[0]`), jamais avec une autre liste.
 
+**Variante vue le 19/10 : plusieurs documents, une seule liste de morceaux**
+
+```python
+# Faux : tous les morceaux d'un document sont recollés en UN seul élément
+res.append(" ".join(morceaux))
+
+# Juste : chaque morceau devient un élément de res
+res += morceaux
+```
+
+`decouper` renvoie déjà une liste de textes : il n'y a plus rien à recoller. Test : `len(res)` doit valoir le nombre total de morceaux (6 sur l'exemple), pas le nombre de documents (2).
+
+### 2.11 `[0]` donne l'élément, `[:1]` donne une liste
+
+```python
+docs = [{"titre": "a"}, {"titre": "b"}]
+docs[0]       # {'titre': 'a'}      un dict
+docs[:1]      # [{'titre': 'a'}]    une liste qui contient le dict
+```
+
+Un slice renvoie toujours une liste, même avec un seul élément. Pour l'élément lui-même : un index sans `:`. Je vérifie avec `print(type(...))`.
+
 ---
 
 ## 3. Return, print et accumulation
@@ -663,6 +685,17 @@ def open_doc(chemin: str) -> list:
 ```
 
 Après `json.load`, ce sont de vrais dictionnaires et listes Python : crochets pour accéder aux champs.
+
+### 8.1 bis Liste de dictionnaires : la position, puis la clé
+
+```python
+docs = open_doc("docs.json")      # une liste de 5 dicts
+len(docs)                         # 5
+docs["titre"]                     # Faux : TypeError, une liste s'indexe avec un nombre
+docs[0]["titre"]                  # Juste : le titre du premier document
+```
+
+Deux étapes dans l'ordre : `docs[0]` (un dict), puis `["titre"]` (une valeur). Au doute, je les écris séparément avec un `print` chacune.
 
 ### 8.2 `import` exécute tout le fichier
 

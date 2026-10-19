@@ -1,3 +1,5 @@
+import doc
+
 def produit_scalaire(a: list, b: list) -> float:
     total = 0
     for x,y in zip(a,b):
@@ -57,12 +59,6 @@ def similarite_texte(texte1: str, texte2: str) -> float:
         return 0.0
     return round(res, 6)
 
-passages = [
-    "python est un langage de programmation",
-    "le chien mange dans le jardin",
-    "le chat dort sur le canape",
-    "le chat mange",
-]
 
 def meilleurs_passages(question: str, passages: list, k: int) -> list:
     score = {}
@@ -83,34 +79,17 @@ def decouper(texte: str, taille: int, chevauchement: int) -> list:
         res.append(" ".join(morceau))
     return res
 
-def preparer_morceaux(documents: list, taille: int, chevauchement: int) -> list:
+def preparer_morceaux(documents, taille, chevauchement) -> list:
     res = []
     if chevauchement >= taille:
         raise ValueError("chevauchement trop grand")
-    for document in documents:
-        morceaux = decouper(document["contenu"], taille, chevauchement)
+    for docs in documents:
+        morceaux = decouper(docs["contenu"], taille, chevauchement)
         res += morceaux
     return res
-        
 
-
-documents = [
-    {"titre": "Chats", "contenu": "le chat dort sur le canape toute la journee"},
-    {"titre": "Python", "contenu": "python est un langage de programmation simple"},
-]
-attendu = [
-    "le chat dort sur",
-    "sur le canape toute",
-    "toute la journee",
-    "python est un langage",
-    "langage de programmation simple",
-    "simple",
-]
-res = preparer_morceaux(documents, 4, 1)
-print(res == attendu)
-print(res)
-print(preparer_morceaux([], 4, 1) == [])
-
-morceaux = preparer_morceaux(documents, 4, 1)
-print(meilleurs_passages("chat", morceaux, 1) == ["le chat dort sur"])
-print(meilleurs_passages("langage de programmation", morceaux, 1) == ["langage de programmation simple"])
+if __name__ == "__main__":
+    docs = doc.open_doc("docs.json")
+    morceaux = preparer_morceaux(docs, 30, 5)
+    meilleurs_passage = meilleurs_passages("Comment le RAG transforme les documents en vecteurs ?", morceaux, 3)
+    print(meilleurs_passage)
