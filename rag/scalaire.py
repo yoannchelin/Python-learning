@@ -1,5 +1,5 @@
 import doc
-
+import string
 def produit_scalaire(a: list, b: list) -> float:
     total = 0
     for x,y in zip(a,b):
@@ -41,7 +41,7 @@ def norme_dico(dico: dict) -> float:
     return somme_carres ** 0.5
 
 def compteur_mot(phrase: str) -> dict:
-    phrase = phrase.lower().split()
+    phrase = nettoyer(phrase).split()
     compteur = {}
     for mot in phrase:
         compteur[mot] = compteur.get(mot, 0) + 1
@@ -88,8 +88,34 @@ def preparer_morceaux(documents, taille, chevauchement) -> list:
         res += morceaux
     return res
 
+def mots_communs(string1: str, string2: str) -> list:
+    res = []
+    dico1 = compteur_mot(string1)
+    dico2 = compteur_mot(string2)
+    for cle in dico1:
+        if cle in dico2:
+            res.append(cle)
+    return res
+
+def nettoyer(texte: str) -> str:
+    res = ""
+    texte  = texte.lower()
+    for lettres in texte:
+        if lettres not in string.punctuation:
+            res += lettres
+    return res
+
+
+
 if __name__ == "__main__":
+    score = {}
+    dico = {}
     docs = doc.open_doc("docs.json")
     morceaux = preparer_morceaux(docs, 30, 5)
-    meilleurs_passage = meilleurs_passages("Comment le RAG transforme les documents en vecteurs ?", morceaux, 3)
-    print(meilleurs_passage)
+    print(mots_communs("Comment le RAG transforme les documents en vecteurs ?", morceaux[4]))
+    print(mots_communs("Comment le RAG transforme les documents en vecteurs ?", morceaux[5]))
+    print(morceaux[4][:40])
+    print(mots_communs("Comment le RAG transforme les documents en vecteurs ?", morceaux[3]))
+    print(nettoyer("l'utilisateur pose une question"))
+    print("a b".split())
+
