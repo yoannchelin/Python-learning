@@ -100,9 +100,11 @@ def mots_communs(string1: str, string2: str) -> list:
 def nettoyer(texte: str) -> str:
     res = ""
     texte  = texte.lower()
-    for lettres in texte:
-        if lettres not in string.punctuation:
-            res += lettres
+    for lettre in texte:
+        if lettre not in string.punctuation:
+            res += lettre
+        else:
+            res += " "
     return res
 
 
@@ -112,10 +114,16 @@ if __name__ == "__main__":
     dico = {}
     docs = doc.open_doc("docs.json")
     morceaux = preparer_morceaux(docs, 30, 5)
-    print(mots_communs("Comment le RAG transforme les documents en vecteurs ?", morceaux[4]))
-    print(mots_communs("Comment le RAG transforme les documents en vecteurs ?", morceaux[5]))
-    print(morceaux[4][:40])
-    print(mots_communs("Comment le RAG transforme les documents en vecteurs ?", morceaux[3]))
-    print(nettoyer("l'utilisateur pose une question"))
-    print("a b".split())
-
+    for morceau in morceaux:
+        score[morceau] = similarite_texte("Comment le RAG transforme les documents en vecteurs ?", morceau)
+    print(compteur_mot("Le chat, le!") == {"le": 2, "chat": 1})
+    print(compteur_mot("l'utilisateur") == {"l": 1, "utilisateur": 1})
+    print(compteur_mot("") == {})
+    q = "Comment le RAG transforme les documents en vecteurs ?"
+    print(sorted(mots_communs(q, morceaux[3])) == ["documents", "en", "le", "les", "rag"])
+    print(sorted(mots_communs(q, morceaux[4])) == ["en"])
+    print(sorted(mots_communs(q, morceaux[5])) == ["en", "le", "les"])
+    print(morceaux[4])
+    for morceau in morceaux:
+        score[morceau] = similarite_texte("Comment le RAG transforme les documents en vecteurs ?", morceau)
+    print(score)
