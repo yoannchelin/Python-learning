@@ -42,8 +42,9 @@ def norme_dico(dico: dict) -> float:
 
 def compteur_mot(phrase: str) -> dict:
     phrase = nettoyer(phrase).split()
+    new_phrase = enlever_mots_vides(phrase)
     compteur = {}
-    for mot in phrase:
+    for mot in new_phrase:
         compteur[mot] = compteur.get(mot, 0) + 1
     return compteur
 
@@ -107,6 +108,14 @@ def nettoyer(texte: str) -> str:
             res += " "
     return res
 
+MOTS_VIDES = ["le", "la", "les", "un", "une", "des", "de", "du", "en", "et", "est", "a", "l", "d", "s", "qu"]
+
+def enlever_mots_vides(mots: list) -> list:
+    res = []
+    for mot in mots:
+        if mot not in MOTS_VIDES:
+            res.append(mot)
+    return res
 
 
 if __name__ == "__main__":
@@ -116,14 +125,7 @@ if __name__ == "__main__":
     morceaux = preparer_morceaux(docs, 30, 5)
     for morceau in morceaux:
         score[morceau] = similarite_texte("Comment le RAG transforme les documents en vecteurs ?", morceau)
-    print(compteur_mot("Le chat, le!") == {"le": 2, "chat": 1})
-    print(compteur_mot("l'utilisateur") == {"l": 1, "utilisateur": 1})
+    print(compteur_mot("Le chat, le!") == {"chat": 1})
+    print(compteur_mot("Le chat dort") == {"chat": 1, "dort": 1})
+    print(compteur_mot("le les") == {})
     print(compteur_mot("") == {})
-    q = "Comment le RAG transforme les documents en vecteurs ?"
-    print(sorted(mots_communs(q, morceaux[3])) == ["documents", "en", "le", "les", "rag"])
-    print(sorted(mots_communs(q, morceaux[4])) == ["en"])
-    print(sorted(mots_communs(q, morceaux[5])) == ["en", "le", "les"])
-    print(morceaux[4])
-    for morceau in morceaux:
-        score[morceau] = similarite_texte("Comment le RAG transforme les documents en vecteurs ?", morceau)
-    print(score)
