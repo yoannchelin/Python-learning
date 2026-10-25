@@ -1,5 +1,7 @@
 import doc
 import string
+import unicodedata
+
 def produit_scalaire(a: list, b: list) -> float:
     total = 0
     for x,y in zip(a,b):
@@ -40,13 +42,15 @@ def norme_dico(dico: dict) -> float:
         somme_carres += dico[cle] ** 2
     return somme_carres ** 0.5
 
-def compteur_mot(phrase: str) -> dict:
-    phrase = nettoyer(phrase).split()
-    new_phrase = enlever_mots_vides(phrase)
-    compteur = {}
-    for mot in new_phrase:
-        compteur[mot] = compteur.get(mot, 0) + 1
-    return compteur
+def compteur_mot(texte: str) -> dict:
+    res = {}
+    texte_sans_ponctuation = nettoyer(texte)
+    texte_sans_accent = enlever_accents(texte_sans_ponctuation).split()
+    texte_cleaned = enlever_mots_vides(texte_sans_accent)
+    for mot in texte_cleaned:
+        mot_singulier = singulier(mot)
+        res[mot_singulier] = res.get(mot_singulier, 0) + 1
+    return res
 
 def similarite_texte(texte1: str, texte2: str) -> float:
     texte1_compter = compteur_mot(texte1)
@@ -117,6 +121,24 @@ def enlever_mots_vides(mots: list) -> list:
             res.append(mot)
     return res
 
+def enlever_accents(texte: str) -> str:
+    res = ""
+    texte = texte.lower()
+    texte_decomposer = unicodedata.normalize("NFD", texte)
+    for lettre in texte_decomposer:
+        if unicodedata.category(lettre) != "Mn":
+            res += lettre
+    return res
+
+def singulier(mot: str) -> str:
+    mot = mot.lower()
+    if len(mot) <= 3:
+        return(mot)
+    if mot.endswith("s"):
+        return(mot[:-1])
+    return(mot)
+
+
 
 if __name__ == "__main__":
     score = {}
@@ -125,7 +147,7 @@ if __name__ == "__main__":
     morceaux = preparer_morceaux(docs, 30, 5)
     for morceau in morceaux:
         score[morceau] = similarite_texte("Comment le RAG transforme les documents en vecteurs ?", morceau)
-    print(compteur_mot("Le chat, le!") == {"chat": 1})
-    print(compteur_mot("Le chat dort") == {"chat": 1, "dort": 1})
-    print(compteur_mot("le les") == {})
-    print(compteur_mot("") == {})
+    classement = sorted(score, key=lambda meilleur_passage: score[meilleur_passage], reverse=True)
+    for morceau2 in classement:
+        print(morceau2[:40], score[morceau2])
+
