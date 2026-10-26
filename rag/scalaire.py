@@ -1,6 +1,7 @@
 import doc
 import string
 import unicodedata
+import anthropic
 
 def produit_scalaire(a: list, b: list) -> float:
     total = 0
@@ -67,9 +68,11 @@ def similarite_texte(texte1: str, texte2: str) -> float:
 
 def meilleurs_passages(question: str, passages: list, k: int) -> list:
     score = {}
+    classement = []
     for passage in passages:
        score[passage] = similarite_texte(question, passage)
-    classement =  sorted(score, key=lambda meilleur_passage: score[meilleur_passage], reverse=True)
+       if score[passage] > 0:
+            classement =  sorted(score, key=lambda meilleur_passage: score[meilleur_passage], reverse=True)
     return classement[:k]
 
 def decouper(texte: str, taille: int, chevauchement: int) -> list:
@@ -124,9 +127,9 @@ def enlever_mots_vides(mots: list) -> list:
 def enlever_accents(texte: str) -> str:
     res = ""
     texte = texte.lower()
-    texte_decomposer = unicodedata.normalize("NFD", texte)
+    texte_decomposer = unicodedata.normalize('NFD', texte)
     for lettre in texte_decomposer:
-        if unicodedata.category(lettre) != "Mn":
+        if unicodedata.category(lettre) != 'Mn':
             res += lettre
     return res
 
@@ -138,6 +141,9 @@ def singulier(mot: str) -> str:
         return(mot[:-1])
     return(mot)
 
+def construire_prompt(question: str, passages: list) -> str:
+    res = "\n".join(passages)
+    return(f"Passages:\n{res}\n\nQuestion: {question}")
 
 
 if __name__ == "__main__":
@@ -150,4 +156,4 @@ if __name__ == "__main__":
     classement = sorted(score, key=lambda meilleur_passage: score[meilleur_passage], reverse=True)
     for morceau2 in classement:
         print(morceau2[:40], score[morceau2])
-
+    print(construire_prompt("Quel animal dort ?", ["le chat dort", "le chien mange"]))
