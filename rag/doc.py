@@ -1,5 +1,5 @@
 import json
-import string
+
 
 
 def open_doc(doc: str) -> list:

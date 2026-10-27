@@ -1,23 +1,26 @@
 from pathlib import Path
-
 import anthropic
-import doc
+import scalaire
+
 
 DOSSIER = Path(__file__).parent   # le dossier rag/, d'où que le script soit lancé
 
-def resumer(texte: str) -> str:
+def repondre(question: str, passages: list) -> str:
+    content = scalaire.construire_prompt(question, passages)
     client = anthropic.Anthropic()
 
+    if passages == []:
+        return("je ne sais pas")
+
     reponse = client.messages.create(
-    model="claude-haiku-4-5-20251001",
-    max_tokens=200,
-    messages=[{"role": "user", "content": f"fais un resume du texte en 1 phrase\n .{texte}"}],
+    model="claude-haiku-5-5",
+    max_tokens=1000,
+    messages=[{"role": "user", "content": f"{content}"}],
     )
-    return reponse.content[0].text
+    for bloc in reponse.content:
+        if bloc.type == "text":
+            return(bloc.text)
+    return("je ne sais pas")
 
 
-documents = doc.open_doc(DOSSIER / "docs.json")     # une liste de dictionnaires
-premier = documents[4]                # un dictionnaire
-texte = premier["contenu"]            # une chaîne (crochets : c'est un dict)
-print(resumer(texte))
        
