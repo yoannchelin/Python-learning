@@ -1,7 +1,6 @@
-import doc
 import string
 import unicodedata
-import call
+
 
 def produit_scalaire(a: list, b: list) -> float:
     total = 0
@@ -142,19 +141,5 @@ def singulier(mot: str) -> str:
 
 def construire_prompt(question: str, passages: list) -> str:
     res = "\n".join(passages)
-    return(f"Réponds uniquement à partir des passages ci-dessous.\nSi la réponse n'y est pas, réponds : je ne sais pas.Passages:\n{res}\n\nQuestion: {question}")
+    return f"Réponds uniquement à partir des passages ci-dessous.\nSi la réponse n'y est pas, réponds : je ne sais pas.\n   Passages:\n{res}\n\nQuestion: {question}"
 
-
-if __name__ == "__main__":
-    questions = ["Comment le RAG transforme les documents en vecteurs ?",
-                "Comment écrire un bon prompt ?",
-                "Quelle est la capitale du Japon ?",
-                ""]
-    docs = doc.open_doc("docs.json")
-    morceaux = preparer_morceaux(docs, 30, 5)
-    for question in questions:
-        meilleurs_passage = meilleurs_passages(question, morceaux, 3)
-        response = call.repondre(question, meilleurs_passage)
-        print(question)
-        print(response)
-    
