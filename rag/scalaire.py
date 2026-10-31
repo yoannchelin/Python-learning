@@ -74,6 +74,8 @@ def meilleurs_passages(question: str, passages: list, k: int) -> list:
             classement =  sorted(score, key=lambda meilleur_passage: score[meilleur_passage], reverse=True)
     return classement[:k]
 
+print(meilleurs_passages("chat", ["le chien mange", "le chat dort"], 3) == ["le chat dort"])
+
 def decouper(texte: str, taille: int, chevauchement: int) -> list:
     res = []
     if chevauchement >= taille:
