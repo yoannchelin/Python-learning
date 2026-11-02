@@ -92,51 +92,40 @@ def similarite_texte(texte_a: str, texte_b: str) -> float:
     return round(res, 6)
 
 def meilleurs_passages(question: str, passages: list, k: int) -> list:
-    res = {}
-    score = 0
+    scores = {}
     for passage in passages:
         score = similarite_texte(question, passage)
         if score > 0:
-            res[passage] = score
-    classement = sorted(res, key=lambda meilleur: res[meilleur], reverse=True)
-    return classement[:k]
-
-print(meilleurs_passages("chat", ["le chien mange", "le chat dort"], 3) == ["le chat dort"])
+            scores[passage] = score
+    res = sorted(scores, key=lambda meilleur_passage: scores[meilleur_passage], reverse=True)
+    return res[:k]
 
 
+class Stock:
+    def __init__(self):
+        self.stock = {}
 
-# =============================================================================
-#  BLOC 1 — Warm-up : ta chaîne RAG, de mémoire (30 à 40 min)
-# =============================================================================
-#
-#  Réécris, sans regarder ton ancien code :
-#
-#  nettoyer(texte) -> str
-#      minuscules, chaque signe de ponctuation remplacé par un espace
-#
-#  enlever_accents(texte) -> str
-#      "transformé" -> "transforme" (unicodedata, NFD, catégorie "Mn")
-#
-#  enlever_mots_vides(mots: list) -> list
-#      garde les mots qui ne sont pas dans MOTS_VIDES
-#
-#  singulier(mot) -> str
-#      enlève le "s" final si le mot a plus de 3 lettres
-#
-#  compteur_mot(texte) -> dict
-#      nettoyer -> enlever_accents -> split -> enlever_mots_vides
-#      -> singulier sur chaque mot, puis comptage
-#
-#  similarite_texte(texte_a, texte_b) -> float
-#      similarité cosinus des deux compteurs, arrondie à 6 décimales,
-#      0.0 si une norme vaut 0 (écris tes fonctions scalaire / norme si besoin)
-#
-#  meilleurs_passages(question, passages, k) -> list
-#      les k passages les plus proches, en ignorant ceux dont le score vaut 0
-#
-# =============================================================================
+    def quantite(self, reference):
+        return self.stock.get(reference, 0)
+    
+    def ajouter(self, reference, quantite):
+       if quantite <= 0:
+           raise ValueError("quantite trop basse")
+       self.stock[reference] = self.stock.get(reference, 0) + quantite
+       return self.stock
+    
+    def retirer(self, reference, quantite):
+        if quantite <= 0:
+            raise ValueError("quantite trop basse")
+        if reference not in self.stock:
+            raise ValueError("reference fausse")
+        if quantite > self.stock[reference]:
+            raise ValueError("stock trop faible")
+        self.stock[reference] = self.stock.get(reference, 0) - quantite
+        return self.stock
 
-
+        
+    
 # =============================================================================
 #  BLOC 2 — Une classe Stock (POO), comme ton WMS de Perth (40 à 50 min)
 # =============================================================================
