@@ -124,6 +124,23 @@ class Stock:
         self.stock[reference] = self.stock.get(reference, 0) - quantite
         return self.stock
 
+    def appliquer(self, mouvement):
+        for a, b, c in mouvement:
+            if a == "achat":
+                self.ajouter(b,c)
+            elif a == "vente":
+                self.retirer(b,c)
+            else:
+                raise ValueError("mauvais type")
+
+    def en_rupture(self, seuil):
+        res = []
+        for reference in self.stock:
+            if self.stock[reference] < seuil:
+                res.append(reference)
+        classement = sorted(res)
+        return classement
+
         
     
 # =============================================================================
