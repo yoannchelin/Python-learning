@@ -141,45 +141,6 @@ class Stock:
         classement = sorted(res)
         return classement
 
-        
-    
-# =============================================================================
-#  BLOC 2 — Une classe Stock (POO), comme ton WMS de Perth (40 à 50 min)
-# =============================================================================
-#
-#  Les offres VIE (SII notamment) demandent la programmation orientée objet.
-#  Tu vas écrire une petite classe qui gère un stock, avec ce que tu as
-#  automatisé chez John Building Supplies : achats et ventes.
-#
-#  class Stock
-#
-#  - à la création, le stock est vide (un dictionnaire {reference: quantite})
-#
-#  - ajouter(reference, quantite)
-#      ajoute la quantité ; lève ValueError("...") si quantite <= 0
-#
-#  - retirer(reference, quantite)
-#      retire la quantité ; lève ValueError("...") si quantite <= 0,
-#      si la référence n'existe pas, ou si le stock est insuffisant
-#      (dans ce cas, le stock ne doit PAS changer)
-#
-#  - quantite(reference) -> int
-#      la quantité en stock, 0 si la référence est inconnue
-#
-#  - appliquer(mouvements: list)
-#      chaque mouvement est un tuple (type, reference, quantite)
-#      type "achat" -> ajouter ; type "vente" -> retirer
-#      tout autre type -> ValueError
-#
-#  - en_rupture(seuil) -> list
-#      les références dont la quantité est strictement inférieure au seuil,
-#      triées par ordre alphabétique
-#
-#  Rappel : chaque méthode reçoit self en premier paramètre, et le
-#  dictionnaire se crée dans __init__ (carnet, section 7).
-#
-# =============================================================================
-
 
 # =============================================================================
 #  BLOC 3 — SQL avec sqlite3 (inclus dans Python, marche hors ligne) (40 min)
@@ -209,18 +170,14 @@ class Stock:
 # =============================================================================
 
 
-# ----------------------------------------------------------------------------
-#  TON CODE ICI (blocs 1, 2 et 3)
-# ----------------------------------------------------------------------------
 
 
 
 
 
-
-REQUETE_1 = ""
-REQUETE_2 = ""
-REQUETE_3 = ""
+REQUETE_1 = "SELECT nom FROM produits ORDER BY nom"
+REQUETE_2 = "SELECT nom FROM produits WHERE categorie = 'bois' ORDER BY nom"
+REQUETE_3 = "SELECT produit_id, sum(quantite) FROM mouvements WHERE type = 'achat' GROUP BY produit_id"
 REQUETE_4 = ""
 REQUETE_5 = ""
 
