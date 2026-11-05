@@ -178,7 +178,7 @@ class Stock:
 REQUETE_1 = "SELECT nom FROM produits ORDER BY nom"
 REQUETE_2 = "SELECT nom FROM produits WHERE categorie = 'bois' ORDER BY nom"
 REQUETE_3 = "SELECT produit_id, sum(quantite) FROM mouvements WHERE type = 'achat' GROUP BY produit_id"
-REQUETE_4 = ""
+REQUETE_4 = "SELECT produits.nom, mouvements.quantite FROM mouvements JOIN produits ON produits.id = mouvements.produit_id"
 REQUETE_5 = ""
 
 
@@ -216,7 +216,7 @@ def executer(requete):
     finally:
         con.close()
 
-
+print(executer(REQUETE_4))
 def check(label, test):
     try:
         resultat = test()
